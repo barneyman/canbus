@@ -10,6 +10,7 @@ import (
 	"fmt"
 	"io"
 	"net"
+	"time"
 
 	"golang.org/x/sys/unix"
 )
@@ -102,6 +103,12 @@ func (sck *Socket) Send(msg Frame) (int, error) {
 	copy(frame[8:], msg.Data)
 
 	return sck.dev.Write(frame[:])
+}
+
+// SetRecvTimeout sets the receive timeout for Recv calls.
+func (sck *Socket) SetRecvTimeout(t time.Duration) error {
+	tv := unix.NsecToTimeval(t.Nanoseconds())
+	return unix.SetsockoptTimeval(sck.dev.fd, unix.SOL_SOCKET, unix.SO_RCVTIMEO, &tv)
 }
 
 // Recv receives data from the CAN socket.

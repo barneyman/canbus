@@ -12,3 +12,7 @@
 //	    msg, err := sck.Recv()
 //	}
 package canbus
+
+import "errors"
+
+var ErrReceiveTimeout = errors.New("user: not found")
